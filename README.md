@@ -1,6 +1,4 @@
 # Chirper
-*Current status:* Offline
-
 A simple Discord bot to fix Twitter and X links
 
 ### [ADD TO SERVER](https://discord.com/api/oauth2/authorize?client_id=1189213965130158182&permissions=274877910016&scope=applications.commands%20bot)
