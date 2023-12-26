@@ -12,10 +12,7 @@ namespace Chirper
             {
                 Token = tokens.discordToken,
                 TokenType = TokenType.Bot,
-                Intents =
-                    DiscordIntents.MessageContents |
-                    DiscordIntents.GuildMessages |
-                    DiscordIntents.DirectMessages,
+                Intents = DiscordIntents.AllUnprivileged | DiscordIntents.MessageContents
             });
 
             BotClient.MessageCreated += async (client, args) =>
