@@ -1,5 +1,4 @@
 ﻿using DSharpPlus.EventArgs;
-using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
 
 namespace Chirper.Message
@@ -10,11 +9,8 @@ namespace Chirper.Message
         {
             if (!await Analyzier.IsTwitterLink(messageArgs.Message.Content))
             {
-                Program.BotClient?.Logger.LogInformation("Is not a Twitter link");
                 return;
             }
-
-            Program.BotClient?.Logger.LogInformation("Is a Twitter link");
 
             await messageArgs.Message.RespondAsync(await Replace(messageArgs.Message.Content));
         }
@@ -52,7 +48,6 @@ namespace Chirper.Message
             {
                 if (content == null)
                 {
-                    Program.BotClient?.Logger.LogInformation("Message is null");
                     return false;
                 }
 

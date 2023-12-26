@@ -1,5 +1,4 @@
 ﻿using DSharpPlus;
-using Microsoft.Extensions.Logging;
 
 namespace Chirper
 {
@@ -25,8 +24,6 @@ namespace Chirper
                 {
                     return;
                 }
-
-                BotClient.Logger.LogInformation("Message triggered");
 
                 await Message.Handler.Run(args);
             };
