@@ -8,4 +8,6 @@ A simple Discord bot to fix Twitter and X links
 
 #### [<img src="https://imgur.com/iEy0nwb.png"> Buy Me A Coffee](https://ko-fi.com/robodoc)
 
+This bot is under the [MIT License](https://github.com/TheRoboDoc/Chirper/blob/main/LICENSE)
+
 *<br>Powered by [.NET 8](https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-8) ,[DSharpPlus](https://github.com/DSharpPlus/DSharpPlus), and [FixTweet](https://github.com/FixTweet/FixTweet)*
