@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 namespace Chirper
 {
     internal class Program
-    {   
+    {
         public static DiscordClient? BotClient { get; private set; }
 
         static async Task Main()
