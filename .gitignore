@@ -3,6 +3,8 @@
 /.vs
 /bin
 /obj
+/Properties
 
 *.resx
 *.Designer.cs
+*.csproj.user
