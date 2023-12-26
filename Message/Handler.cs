@@ -1,0 +1,70 @@
+﻿using DSharpPlus.EventArgs;
+using Microsoft.Extensions.Logging;
+using System.Text.RegularExpressions;
+
+namespace Chirper.Message
+{
+    public static partial class Handler
+    {
+        public static async Task Run(MessageCreateEventArgs messageArgs)
+        {
+            if (!await Analyzier.IsTwitterLink(messageArgs.Message.Content))
+            {
+                Program.BotClient?.Logger.LogInformation("Is not a Twitter link");
+                return;
+            }
+
+            Program.BotClient?.Logger.LogInformation("Is a Twitter link");
+
+            await messageArgs.Message.RespondAsync(await Replace(messageArgs.Message.Content));
+        }
+
+        private static async Task<string> Replace(string content)
+        {
+            return await Task.Run(() =>
+            {
+                content = TwitterOrXPattern().Replace(content, match =>
+                {
+                    string domain = match.Groups["domain"].Value;
+                    string rest = match.Groups["rest"].Value;
+
+                    string replacement = "";
+
+                    if (domain == "twitter.com")
+                    {
+                        replacement = "https://fxtwitter.com" + rest;
+                    }
+                    else if (domain == "x.com")
+                    {
+                        replacement = "https://fixupx.com" + rest;
+                    }
+
+                    return replacement;
+                });
+
+                return content;
+            });
+        }
+
+        private static partial class Analyzier
+        {
+            public static async Task<bool> IsTwitterLink(string content)
+            {
+                if (content == null)
+                {
+                    Program.BotClient?.Logger.LogInformation("Message is null");
+                    return false;
+                }
+
+                return await Task.Run(() =>
+                {
+                    Regex regex = TwitterOrXPattern();
+                    return regex.IsMatch(content);
+                });
+            }
+        }
+
+        [GeneratedRegex(@"((?:https?://)?(?:www\.)?(?:(?<domain>twitter\.com|x\.com))(?<rest>\S+))")]
+        private static partial Regex TwitterOrXPattern();
+    }
+}

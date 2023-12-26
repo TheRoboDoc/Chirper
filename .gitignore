@@ -1,0 +1,8 @@
+
+.editorconfig
+/.vs
+/bin
+/obj
+
+*.resx
+*.Designer.cs
