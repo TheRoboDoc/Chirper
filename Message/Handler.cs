@@ -19,26 +19,23 @@ namespace Chirper.Message
         {
             return await Task.Run(() =>
             {
-                content = TwitterOrXPattern().Replace(content, match =>
+                Match? matches = TwitterOrXPattern().Match(content);
+
+                string domain = matches.Groups["domain"].Value.Trim();
+                string rest = matches.Groups["rest"].Value.Trim();
+
+                string replacement = "";
+
+                if (domain == "twitter.com")
                 {
-                    string domain = match.Groups["domain"].Value;
-                    string rest = match.Groups["rest"].Value;
+                    replacement = "https://fxtwitter.com" + rest;
+                }
+                else if (domain == "x.com")
+                {
+                    replacement = "https://fixupx.com" + rest;
+                }
 
-                    string replacement = "";
-
-                    if (domain == "twitter.com")
-                    {
-                        replacement = "https://fxtwitter.com" + rest;
-                    }
-                    else if (domain == "x.com")
-                    {
-                        replacement = "https://fixupx.com" + rest;
-                    }
-
-                    return replacement;
-                });
-
-                return content;
+                return replacement;
             });
         }
 
