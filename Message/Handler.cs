@@ -56,7 +56,7 @@ namespace Chirper.Message
             }
         }
 
-        [GeneratedRegex(@"((?:https?://)?(?:www\.)?(?:(?<domain>twitter\.com|x\.com))(?<rest>\S+))")]
+        [GeneratedRegex(@"((?:https?://)?(?:www\.)?(?:(?<domain>(?<!\w)x\.com|(?<!\w)twitter\.com)))(?<rest>\S+)")]
         private static partial Regex TwitterOrXPattern();
     }
 }
