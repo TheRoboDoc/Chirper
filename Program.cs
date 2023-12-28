@@ -1,4 +1,6 @@
-﻿using DSharpPlus;
+﻿using Chirper.SlashCommands;
+using DSharpPlus;
+using DSharpPlus.SlashCommands;
 
 namespace Chirper
 {
@@ -24,6 +26,10 @@ namespace Chirper
 
                 await Message.Handler.Run(args);
             };
+
+            SlashCommandsExtension slashCommands = BotClient.UseSlashCommands();
+
+            slashCommands.RegisterCommands<Settings>();
 
             await BotClient.ConnectAsync();
             await Task.Delay(-1);
