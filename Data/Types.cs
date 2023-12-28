@@ -10,7 +10,7 @@ namespace Chirper.Data
     {
         public struct ChatToggle
         {
-            public long ChannelID { get; set; }
+            public ulong ChannelID { get; set; }
 
             public bool Enabled { get; set; }
         }
