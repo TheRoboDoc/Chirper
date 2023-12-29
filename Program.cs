@@ -16,7 +16,7 @@ namespace Chirper
                 TokenType = TokenType.Bot,
 
                 Intents = DiscordIntents.AllUnprivileged | DiscordIntents.MessageContents,
-                
+
                 LogUnknownEvents = false
             });
 
