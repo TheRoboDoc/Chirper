@@ -1,4 +1,5 @@
-﻿using DSharpPlus.EventArgs;
+﻿using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 using System.Text.RegularExpressions;
 
 namespace Chirper.Message
@@ -8,6 +9,11 @@ namespace Chirper.Message
         public static async Task Run(MessageCreateEventArgs messageArgs)
         {
             if (!await Analyzier.IsTwitterLink(messageArgs.Message.Content))
+            {
+                return;
+            }
+
+            if (await Analyzier.HasEmbed(messageArgs.Message))
             {
                 return;
             }
@@ -52,6 +58,29 @@ namespace Chirper.Message
                 {
                     Regex regex = TwitterOrXPattern();
                     return regex.IsMatch(content);
+                });
+            }
+
+            public static async Task<bool> HasEmbed(DiscordMessage message)
+            {
+                await Task.Delay(500);
+
+                return await Task.Run(() =>
+                {
+                    if (!message.Embeds.Any())
+                    {
+                        return false;
+                    }
+
+                    foreach (DiscordEmbed embed in message.Embeds)
+                    {
+                        if (embed.Footer.Text.Contains("Twitter"))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 });
             }
         }
