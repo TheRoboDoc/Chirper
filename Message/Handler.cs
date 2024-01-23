@@ -63,7 +63,7 @@ namespace Chirper.Message
 
             public static async Task<bool> HasEmbed(DiscordMessage message)
             {
-                await Task.Delay(500);
+                await Task.Delay(3000);
 
                 return await Task.Run(() =>
                 {
