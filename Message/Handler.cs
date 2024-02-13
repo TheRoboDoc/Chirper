@@ -13,10 +13,12 @@ namespace Chirper.Message
                 return;
             }
 
+            /*
             if (await Analyzier.HasEmbed(messageArgs.Message))
             {
                 return;
             }
+            */
 
             await messageArgs.Message.RespondAsync(await Replace(messageArgs.Message.Content));
         }
