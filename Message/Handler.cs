@@ -60,29 +60,6 @@ namespace Chirper.Message
                     return regex.IsMatch(content);
                 });
             }
-
-            public static async Task<bool> HasEmbed(DiscordMessage message)
-            {
-                await Task.Delay(3000);
-
-                return await Task.Run(() =>
-                {
-                    if (!message.Embeds.Any())
-                    {
-                        return false;
-                    }
-
-                    foreach (DiscordEmbed embed in message.Embeds)
-                    {
-                        if (embed.Footer.Text.Contains("Twitter"))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                });
-            }
         }
 
         [GeneratedRegex(@"((?:https?://)?(?:www\.)?(?:(?<domain>(?<!\w)x\.com|(?<!\w)twitter\.com)))(?<rest>\S+)")]
