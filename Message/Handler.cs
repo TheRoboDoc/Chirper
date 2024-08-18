@@ -1,5 +1,6 @@
 ﻿using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using DSharpPlus.Exceptions;
 using System.Text.RegularExpressions;
 
 namespace Chirper.Message
@@ -26,11 +27,22 @@ namespace Chirper.Message
 
             await messageArgs.Message.RespondAsync(response);
         }
+
+        public static async Task MessageDelete(DiscordMessage deletedMessage)
+        {
+            DiscordChannel channel = deletedMessage.Channel;
+
+            DiscordMessage message = channel.GetMessagesAfterAsync(deletedMessage.Id).ToBlockingEnumerable().ToList().First();
+
+            if (Program.BotClient?.CurrentUser is null)
             {
                 return;
             }
 
-            await messageArgs.Message.RespondAsync(await Replace(messageArgs.Message.Content));
+            if (message.Author  == Program.BotClient.CurrentUser)
+            {
+                await message.DeleteAsync();
+            }
         }
 
         private static async Task<string> Replace(string content)

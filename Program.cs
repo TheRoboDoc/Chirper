@@ -1,6 +1,7 @@
 ﻿using Chirper.SlashCommands;
 using DSharpPlus;
 using DSharpPlus.SlashCommands;
+using Microsoft.Extensions.Logging;
 
 namespace Chirper
 {
@@ -15,7 +16,7 @@ namespace Chirper
                 Token = tokens.discordToken,
                 TokenType = TokenType.Bot,
 
-                Intents = DiscordIntents.AllUnprivileged | DiscordIntents.MessageContents,
+                Intents = DiscordIntents.AllUnprivileged | DiscordIntents.MessageContents | DiscordIntents.GuildMessages,
 
                 LogUnknownEvents = false
             });
@@ -28,6 +29,24 @@ namespace Chirper
                 }
 
                 await Message.Handler.Run(args);
+            };
+
+            BotClient.MessageDeleted += async (client, args) =>
+            {
+                if (args.Message.Author.IsBot)
+                {
+                    return;
+                }
+
+                try
+                {
+                    await Message.Handler.MessageDelete(args.Message);
+                }
+                catch
+                {
+                    BotClient?.Logger.LogWarning("Failed to delete a message");
+                }
+                
             };
 
             SlashCommandsExtension slashCommands = BotClient.UseSlashCommands();
