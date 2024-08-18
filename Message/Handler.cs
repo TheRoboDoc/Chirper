@@ -13,7 +13,19 @@ namespace Chirper.Message
                 return;
             }
 
-            if (await Analyzier.HasEmbed(messageArgs.Message))
+            string response = await Replace(messageArgs.Message.Content);
+
+            try
+            {
+                await messageArgs.Message.ModifyEmbedSuppressionAsync(true);
+            }
+            catch (UnauthorizedException)
+            {
+                response += $"\n-# {Program.BotClient?.CurrentUser.Mention} doesn't have **Manage Message** permission to manage duplicate emdeds";
+            }
+
+            await messageArgs.Message.RespondAsync(response);
+        }
             {
                 return;
             }
