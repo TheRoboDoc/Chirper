@@ -1,6 +1,7 @@
-﻿using Chirper.SlashCommands;
+﻿using Chirper.Commands;
 using DSharpPlus;
-using DSharpPlus.SlashCommands;
+using DSharpPlus.Commands;
+using DSharpPlus.Commands.Processors.SlashCommands;
 using Microsoft.Extensions.Logging;
 
 namespace Chirper
@@ -11,47 +12,64 @@ namespace Chirper
 
         static async Task Main()
         {
-            BotClient = new DiscordClient(new DiscordConfiguration()
-            {
-                Token = tokens.discordToken,
-                TokenType = TokenType.Bot,
+            DiscordClientBuilder builder = DiscordClientBuilder.CreateDefault
+            (
+                token: tokens.discordToken,
+                intents: DiscordIntents.AllUnprivileged | DiscordIntents.MessageContents | DiscordIntents.GuildMessages
+            );
 
-                Intents = DiscordIntents.AllUnprivileged | DiscordIntents.MessageContents | DiscordIntents.GuildMessages,
-
-                LogUnknownEvents = false
-            });
-
-            BotClient.MessageCreated += async (client, args) =>
-            {
-                if (args.Message.Author.IsBot)
+            builder.ConfigureEventHandlers
+            (
+                x =>
+                x.HandleMessageCreated(async (client, args) =>
                 {
-                    return;
-                }
+                    if (args.Message.Author.IsBot)
+                    {
+                        return;
+                    }
 
-                await Message.Handler.Run(args);
-            };
+                    await Message.Handler.Run(args);
+                }).
 
-            BotClient.MessageDeleted += async (client, args) =>
-            {
-                if (args.Message.Author.IsBot)
+                HandleMessageDeleted(async (client, args) =>
                 {
-                    return;
-                }
+                    if (args.Message.Author.IsBot)
+                    {
+                        return;
+                    }
 
-                try
+                    try
+                    {
+                        await Message.Handler.MessageDelete(args.Message);
+                    }
+                    catch
+                    {
+                        BotClient?.Logger.LogWarning("Failed to delete a message");
+                    }
+                })
+            );
+
+            builder.UseCommands
+            (
+                extension =>
                 {
-                    await Message.Handler.MessageDelete(args.Message);
-                }
-                catch
+                    extension.AddCommands([typeof(Settings)]);
+
+                    SlashCommandProcessor slashCommandProcessor = new(new()
+                    {
+                        RegisterCommands = true
+                    });
+
+                    extension.AddProcessor(slashCommandProcessor);
+                },
+
+                new CommandsConfiguration()
                 {
-                    BotClient?.Logger.LogWarning("Failed to delete a message");
+                    DebugGuildId = 766478619513585675
                 }
-                
-            };
+            );
 
-            SlashCommandsExtension slashCommands = BotClient.UseSlashCommands();
-
-            slashCommands.RegisterCommands<Settings>();
+            BotClient = builder.Build();
 
             await BotClient.ConnectAsync();
             await Task.Delay(-1);

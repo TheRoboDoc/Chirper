@@ -7,7 +7,7 @@ namespace Chirper.Message
 {
     public static partial class Handler
     {
-        public static async Task Run(MessageCreateEventArgs messageArgs)
+        public static async Task Run(MessageCreatedEventArgs messageArgs)
         {
             if (!await Analyzier.IsTwitterLink(messageArgs.Message.Content))
             {
@@ -39,7 +39,7 @@ namespace Chirper.Message
                 return;
             }
 
-            if (message.Author  == Program.BotClient.CurrentUser)
+            if (message.Author == Program.BotClient.CurrentUser)
             {
                 await message.DeleteAsync();
             }
