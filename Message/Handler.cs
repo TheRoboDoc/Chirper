@@ -9,7 +9,7 @@ namespace Chirper.Message
     {
         public static async Task Run(MessageCreatedEventArgs messageArgs)
         {
-            if (!await Analyzier.IsTwitterLink(messageArgs.Message.Content))
+            if (!await Analyzer.IsTwitterLink(messageArgs.Message.Content))
             {
                 return;
             }
@@ -22,7 +22,7 @@ namespace Chirper.Message
             }
             catch (UnauthorizedException)
             {
-                response += $"\n-# {Program.BotClient?.CurrentUser.Mention} doesn't have **Manage Message** permission to manage duplicate emdeds";
+                response += $"\n-# {Program.BotClient?.CurrentUser.Mention} doesn't have **Manage Messages** permission to manage duplicate embeds";
             }
 
             await messageArgs.Message.RespondAsync(response);
@@ -69,7 +69,7 @@ namespace Chirper.Message
             });
         }
 
-        private static partial class Analyzier
+        private static partial class Analyzer
         {
             public static async Task<bool> IsTwitterLink(string content)
             {
