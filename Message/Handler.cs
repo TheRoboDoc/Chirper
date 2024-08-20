@@ -30,11 +30,11 @@ namespace Chirper.Message
 
         public static async Task MessageDelete(DiscordMessage deletedMessage)
         {
-            DiscordChannel channel = deletedMessage.Channel;
+            DiscordChannel? channel = deletedMessage.Channel;
 
-            DiscordMessage message = channel.GetMessagesAfterAsync(deletedMessage.Id).ToBlockingEnumerable().ToList().First();
+            DiscordMessage? message = channel?.GetMessagesAfterAsync(deletedMessage.Id).ToBlockingEnumerable().ToList().First();
 
-            if (Program.BotClient?.CurrentUser is null)
+            if (Program.BotClient?.CurrentUser is null || message is null)
             {
                 return;
             }
