@@ -1,7 +1,6 @@
 ﻿using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Exceptions;
-using System.Text.RegularExpressions;
 
 namespace Chirper.Message
 {
@@ -49,23 +48,43 @@ namespace Chirper.Message
         {
             return await Task.Run(() =>
             {
-                Match? matches = TwitterOrXPattern().Match(content);
+                string[] words = content.Split(' ');
 
-                string domain = matches.Groups["domain"].Value.Trim();
-                string rest = matches.Groups["rest"].Value.Trim();
+                List<string> result = new();
 
-                string replacement = "";
-
-                if (domain == "twitter.com")
+                foreach (string word in words)
                 {
-                    replacement = "https://fxtwitter.com" + rest;
-                }
-                else if (domain == "x.com")
-                {
-                    replacement = "https://fixupx.com" + rest;
+                    if (!Uri.TryCreate(word, UriKind.Absolute, out Uri? uriResult))
+                    {
+                        continue;
+                    }
+
+                    if (!(uriResult.Host == "twitter.com" || uriResult.Host == "x.com") || !uriResult.AbsolutePath.Contains("/status/"))
+                    {
+                        continue;
+                    }
+
+                    if (uriResult.Host == "twitter.com")
+                    {
+                        UriBuilder uriBuilder = new UriBuilder(uriResult)
+                        {
+                            Host = "fxtwitter.com"
+                        };
+
+                        return uriBuilder.Uri.ToString();
+                    }
+                    else if (uriResult.Host == "x.com")
+                    {
+                        UriBuilder uriBuilder = new UriBuilder(uriResult)
+                        {
+                            Host = "fixupx.com"
+                        };
+
+                        return uriBuilder.Uri.ToString();
+                    }
                 }
 
-                return replacement;
+                return string.Empty;
             });
         }
 
@@ -73,20 +92,17 @@ namespace Chirper.Message
         {
             public static async Task<bool> IsTwitterLink(string content)
             {
-                if (content == null)
-                {
-                    return false;
-                }
-
                 return await Task.Run(() =>
                 {
-                    Regex regex = TwitterOrXPattern();
-                    return regex.IsMatch(content);
+                    if (string.IsNullOrEmpty(content))
+                    {
+                        return false;
+                    }
+
+                    return (content.Contains("https://x.com/") && content.Contains("/status/")) ||
+                           (content.Contains("https://twitter.com/") && content.Contains("/status/"));
                 });
             }
         }
-
-        [GeneratedRegex(@"((?:https?://)?(?:www\.)?(?:(?<domain>(?<!\w)x\.com|(?<!\w)twitter\.com)))(?<rest>\S+)")]
-        private static partial Regex TwitterOrXPattern();
     }
 }
