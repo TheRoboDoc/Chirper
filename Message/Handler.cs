@@ -50,8 +50,6 @@ namespace Chirper.Message
             {
                 string[] words = content.Split(' ');
 
-                List<string> result = new();
-
                 foreach (string word in words)
                 {
                     if (!Uri.TryCreate(word, UriKind.Absolute, out Uri? uriResult))
@@ -64,24 +62,18 @@ namespace Chirper.Message
                         continue;
                     }
 
-                    if (uriResult.Host == "twitter.com")
-                    {
-                        UriBuilder uriBuilder = new UriBuilder(uriResult)
-                        {
-                            Host = "fxtwitter.com"
-                        };
+                    string girlcockx = "girlcockx.com";
 
-                        return uriBuilder.Uri.ToString();
-                    }
-                    else if (uriResult.Host == "x.com")
-                    {
-                        UriBuilder uriBuilder = new UriBuilder(uriResult)
-                        {
-                            Host = "fixupx.com"
-                        };
+                    bool funny = Random.Shared.Next(1, 7) == 1;
 
-                        return uriBuilder.Uri.ToString();
-                    }
+                    string newHost = uriResult.Host switch
+                    {
+                        "twitter.com" => funny ? girlcockx : "fxtwitter.com",
+                        "x.com" => funny ? girlcockx : "fixupx.com",
+                        _ => uriResult.Host
+                    };
+
+                    return new UriBuilder(uriResult) { Host = newHost }.Uri.ToString();
                 }
 
                 return string.Empty;
