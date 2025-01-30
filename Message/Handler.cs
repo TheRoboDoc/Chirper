@@ -48,7 +48,7 @@ namespace Chirper.Message
         {
             return await Task.Run(() =>
             {
-                string[] words = content.Split(' ');
+                string[] words = content.Split(' ', '\n');
 
                 foreach (string word in words)
                 {
