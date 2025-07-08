@@ -62,14 +62,10 @@ namespace Chirper.Message
                         continue;
                     }
 
-                    string girlcockx = "girlcockx.com";
-
-                    bool funny = Random.Shared.Next(1, 7) == 1;
-
                     string newHost = uriResult.Host switch
                     {
-                        "twitter.com" => funny ? girlcockx : "fxtwitter.com",
-                        "x.com" => funny ? girlcockx : "fixupx.com",
+                        "twitter.com" => "fxtwitter.com",
+                        "x.com" => "fixupx.com",
                         _ => uriResult.Host
                     };
 
